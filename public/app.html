@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+    <body>
+       <form>
+              <v-text-field
+                v-model="name"
+                :error-messages="nameErrors"
+                :counter="10"
+                label="Name"
+                required
+                @input="$v.name.$touch()"
+                @blur="$v.name.$touch()"
+              ></v-text-field>
+              <v-text-field
+                v-model="email"
+                :error-messages="emailErrors"
+                label="E-mail"
+                required
+                @input="$v.email.$touch()"
+                @blur="$v.email.$touch()"
+              ></v-text-field>
+              <v-select
+                v-model="select"
+                :items="items"
+                :error-messages="selectErrors"
+                label="Item"
+                required
+                @change="$v.select.$touch()"
+                @blur="$v.select.$touch()"
+              ></v-select>
+              <v-checkbox
+                v-model="checkbox"
+                :error-messages="checkboxErrors"
+                label="Do you agree?"
+                required
+                @change="$v.checkbox.$touch()"
+                @blur="$v.checkbox.$touch()"
+              ></v-checkbox>
+          
+              <v-btn class="mr-4" @click="submit">submit</v-btn>
+              <v-btn @click="clear">clear</v-btn>
+            </form>
+    </body>
+
+    Components
+    /
+    Forms
+    Forms
+    When it comes to form validation, Vuetify has a multitude of integrations and baked in functionality. Want to use a 3rd party validation plugin? Out of the box you can use Vee-validate and vuelidate.
+    
+    ads via Carbon
+    Students and Teachers, save up to 60% on Adobe Creative Cloud.
+    ads via Carbon
+    Usage
+    The internal v-form component makes it easy to add validation to form inputs. All input components have a rules prop which takes an array of functions. These functions allow you to specify conditions in which the field is valid or invalid. Whenever the value of an input is changed, each function in the array will receive the new value. If a function returns false or a string, validation has failed.
+    
+    First name
+    0 / 10
+    Last name
+    0 / 10
+    E-mail
+    API
+    Select your desired component from below and see the available props, slots, events and functions.
+    
+    ​
+    Available Component(s)
+    v-form
+    ​
+    Search...
+    Name
+    lazy-validation
+    Type
+    boolean
+    Default
+    false
+    Description
+    If enabled, value will always be true unless there are visible validation errors. You can still call validate() to manually trigger validation
+    
+    Name
+    value
+    Type
+    boolean
+    Default
+    false
+    Description
+    A boolean value representing the validity of the form.
+    
+    Playground
+    Name
+    0 / 10
+    E-mail
+    Item
+    Examples
+    Below is a collection of simple to complex examples.
+    
+    Creating rules
+    Rules allow you to apply custom validation on all form components. These are validated sequentially and will display a maximum of 1 error at a time, so make sure you order your rules accordingly.
+    
+    First name
+    Foobar
+    6
+    Max characters
+    Value must match
+    Foobar
+    Validation with submit & clear
+    The v-form component has three functions that can be accessed by setting a ref on the component. A ref allows us to access internal methods on a component, for example, <v-form ref="form">. this.$refs.form.validate() will validate all inputs and return if they are all valid or not. this.$refs.form.reset() will clear all inputs and reset their validation errors. this.$refs.form.resetValidation() will only reset input validation and not alter their state.
+    
+    Name
+    Name is required
+    0 / 10
+    E-mail
+    E-mail is required
+    Item
+    Item is required
+    You must agree to continue!
+    
+    Vuelidate
+    vuelidate is a simple, lightweight model-based validation for Vue.js. Documentation
+    
+    <script>
+      import { validationMixin } from 'vuelidate'
+      import { required, maxLength, email } from 'vuelidate/lib/validators'
+    
+      export default {
+        mixins: [validationMixin],
+    
+        validations: {
+          name: { required, maxLength: maxLength(10) },
+          email: { required, email },
+          select: { required },
+          checkbox: {
+            checked (val) {
+              return val
+            },
+          },
+        },
+    
+        data: () => ({
+          name: '',
+          email: '',
+          select: null,
+          items: [
+            'Item 1',
+            'Item 2',
+            'Item 3',
+            'Item 4',
+          ],
+          checkbox: false,
+        }),
+    
+        computed: {
+          checkboxErrors () {
+            const errors = []
+            if (!this.$v.checkbox.$dirty) return errors
+            !this.$v.checkbox.checked && errors.push('You must agree to continue!')
+            return errors
+          },
+          selectErrors () {
+            const errors = []
+            if (!this.$v.select.$dirty) return errors
+            !this.$v.select.required && errors.push('Item is required')
+            return errors
+          },
+          nameErrors () {
+            const errors = []
+            if (!this.$v.name.$dirty) return errors
+            !this.$v.name.maxLength && errors.push('Name must be at most 10 characters long')
+            !this.$v.name.required && errors.push('Name is required.')
+            return errors
+          },
+          emailErrors () {
+            const errors = []
+            if (!this.$v.email.$dirty) return errors
+            !this.$v.email.email && errors.push('Must be valid e-mail')
+            !this.$v.email.required && errors.push('E-mail is required')
+            return errors
+          },
+        },
+    
+        methods: {
+          submit () {
+            this.$v.$touch()
+          },
+          clear () {
+            this.$v.$reset()
+            this.name = ''
+            this.email = ''
+            this.select = null
+            this.checkbox = false
+          },
+        },
+      }
+    </script>
+</html>
